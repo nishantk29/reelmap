@@ -26,6 +26,12 @@ export function hash(str: string): number {
     h1 ^= str.charCodeAt(i);
     h1 = Math.imul(h1, 16777619);
   }
+  // Murmur3 finalizer so every bit is well mixed.
+  h1 ^= h1 >>> 16;
+  h1 = Math.imul(h1, 0x85ebca6b);
+  h1 ^= h1 >>> 13;
+  h1 = Math.imul(h1, 0xc2b2ae35);
+  h1 ^= h1 >>> 16;
   return h1 >>> 0;
 }
 
@@ -49,7 +55,7 @@ function wrap(title: string, maxChars: number, maxLines: number): string[] {
 }
 
 function shape(seed: number, w: number, hgt: number, fill: string, ink: string): SVGElement[] {
-  const v = seed % 4;
+  const v = (seed >>> 4) % 4;
   if (v === 0) {
     // A low sun over a horizon line.
     return [
