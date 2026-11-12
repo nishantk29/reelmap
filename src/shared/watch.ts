@@ -148,7 +148,6 @@ export interface CliPlan {
 const nordCode = (cc: string) => (cc.toUpperCase() === 'GB' ? 'uk' : cc.toLowerCase());
 /** NordVPN city and country arguments use lower case with underscores. */
 const nordName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-const quote = (s: string) => `"${s.replace(/["\\$`]/g, '')}"`;
 
 export function cliPlan(vpnId: VpnId, cc: string, countryName: string): CliPlan | null {
   const vpn = vpnById(vpnId);
@@ -159,11 +158,11 @@ export function cliPlan(vpnId: VpnId, cc: string, countryName: string): CliPlan 
         os: 'Linux',
         lines: [
           'expressvpnctl background enable',
-          `expressvpnctl get regions | grep -i ${quote(countryName)}`,
+          'expressvpnctl get regions',
           `expressvpnctl connect "<a ${countryName.replace(/["\\$`]/g, '')} location from the list>"`,
         ],
         notes: [
-          'ExpressVPN documents connecting by exact location name, such as "Germany - Frankfurt - 1". It does not document connecting by country alone, so pick a location from the list.',
+          'ExpressVPN documents connecting by exact location name, such as "Germany - Frankfurt - 1". It does not document connecting by country alone, so pick a location from the list. Location names can be short forms, such as UK or USA.',
           'The first line is only needed when the ExpressVPN app is not running.',
         ],
         source: vpn.source,

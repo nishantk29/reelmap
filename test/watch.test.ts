@@ -41,7 +41,7 @@ describe('CLI commands', () => {
     expect(p.os).toBe('Linux');
     expect(p.lines).toEqual([
       'expressvpnctl background enable',
-      'expressvpnctl get regions | grep -i "Germany"',
+      'expressvpnctl get regions',
       'expressvpnctl connect "<a Germany location from the list>"',
     ]);
   });

@@ -160,7 +160,7 @@ test.describe('title page', () => {
     await expect(sheet.getByRole('heading', { level: 2 })).toHaveText('Watch on Netflix');
     await expect(sheet.getByTestId('watch-vpn')).toHaveValue('expressvpn');
     await expect(sheet.getByTestId('watch-country')).toHaveValue('US');
-    await expect(sheet.getByTestId('cli-command')).toContainText('expressvpnctl get regions | grep -i "United States"');
+    await expect(sheet.getByTestId('cli-command')).toContainText('expressvpnctl get regions');
 
     await sheet.getByTestId('copy-cli').click();
     await expect(sheet.getByText('Copied')).toBeVisible();
