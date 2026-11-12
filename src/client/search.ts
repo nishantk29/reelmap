@@ -157,7 +157,10 @@ export function searchBox(opts: SearchOpts): HTMLElement {
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        if (!open && items.length) render(lastQuery);
+        if (!open && items.length) {
+          render(lastQuery);
+          setActive(0);
+        }
         else if (n) setActive(active < n - 1 ? active + 1 : 0);
         break;
       case 'ArrowUp':
