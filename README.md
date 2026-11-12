@@ -2,7 +2,7 @@
 
 Search any movie or show and see which countries and streaming services carry it. Pick a region, switch your VPN, and watch.
 
-**Live:** https://where.hatethespurs.com
+**Live:** https://watch.hatethespurs.com
 
 | Phone, light | Phone, dark |
 |---|---|
@@ -72,7 +72,7 @@ For `wrangler dev`, put it in `.dev.vars` (git-ignored) as `TMDB_READ_ACCESS_TOK
 
 ### Deploy layouts
 
-- `wrangler.toml` deploys the Worker `reelmap` with the `dist/public` assets directory on the custom domain `where.hatethespurs.com`.
+- `wrangler.toml` deploys the Worker `reelmap` with the `dist/public` assets directory on the custom domain `watch.hatethespurs.com`.
 - `npm run build:embedded` writes `dist-embedded/worker.js`: one ES module with every static file inlined as base64 plus a content-type map. Upload it through the Cloudflare API as a single module, no assets upload step.
 
 ## Tests
@@ -80,7 +80,7 @@ For `wrangler dev`, put it in `.dev.vars` (git-ignored) as `TMDB_READ_ACCESS_TOK
 ```sh
 npm test            # Vitest: grouping, filters, validation, Watch it builders, Worker proxy
 npm run e2e         # Playwright, Chromium at 390x844 and 1280x800
-BASE_URL=https://where.hatethespurs.com npm run e2e   # same suite against a live site
+BASE_URL=https://watch.hatethespurs.com npm run e2e   # same suite against a live site
 npm run typecheck
 npm run lint
 npm run screenshots # regenerate docs/screenshots

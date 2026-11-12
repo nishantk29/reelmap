@@ -8,7 +8,7 @@ workers_dev = true
 
 # Custom domain. The zone must be on the same Cloudflare account.
 routes = [
-  { pattern = "where.hatethespurs.com", custom_domain = true }
+  { pattern = "watch.hatethespurs.com", custom_domain = true }
 ]
 
 [build]
