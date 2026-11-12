@@ -2,11 +2,12 @@
 
 export const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  // Cloudflare Web Analytics is injected at the edge for this zone.
+  "script-src 'self' https://static.cloudflareinsights.com",
   "style-src 'self'",
   "img-src 'self' https://image.tmdb.org data:",
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://cloudflareinsights.com",
   "manifest-src 'self'",
   "object-src 'none'",
   "base-uri 'none'",
