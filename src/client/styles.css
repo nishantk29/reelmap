@@ -544,7 +544,13 @@ kbd {
   gap: var(--s3);
 }
 .field-row .field {
-  min-width: 150px;
+  flex-basis: 100%;
+}
+@media (min-width: 480px) {
+  .field-row .field {
+    flex-basis: 0;
+    min-width: 180px;
+  }
 }
 
 /* ---------- search ---------- */
@@ -767,6 +773,73 @@ kbd {
 .hero-home {
   padding-top: clamp(32px, 7vw, 88px);
   padding-bottom: var(--s6);
+}
+.hero-home {
+  display: grid;
+  gap: var(--s6);
+}
+@media (min-width: 1024px) {
+  .hero-home {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: end;
+    gap: var(--s8);
+  }
+}
+.ticket {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .ticket {
+    display: block;
+    position: relative;
+    padding: var(--s5);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    margin-bottom: 40px;
+  }
+  /* Punched notches, like a ticket stub. */
+  .ticket::before,
+  .ticket::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    margin-top: -9px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+  }
+  .ticket::before {
+    left: -10px;
+    clip-path: inset(0 0 0 50%);
+  }
+  .ticket::after {
+    right: -10px;
+    clip-path: inset(0 50% 0 0);
+  }
+}
+.ticket-kicker {
+  font: 400 var(--t-lg) / 1.1 var(--font-display);
+  color: var(--accent-text);
+  padding-bottom: var(--s3);
+  margin-bottom: var(--s3);
+  border-bottom: 1px dashed var(--line-strong);
+}
+.ticket-rows {
+  display: grid;
+  gap: var(--s3);
+  margin: 0;
+}
+.ticket-rows dt {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+.ticket-rows dd {
+  margin: 0;
+  font-size: var(--t-xs);
+  color: var(--muted);
 }
 .hero-home h1 {
   font-size: var(--t-hero);

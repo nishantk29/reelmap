@@ -36,6 +36,23 @@ function skeletonGrid(n: number): HTMLElement {
   );
 }
 
+/** A quiet programme card beside the search on wide screens. */
+function ticket(): HTMLElement {
+  return h(
+    'aside',
+    { class: 'ticket', 'aria-label': 'What Reelmap shows' },
+    h('p', { class: 'ticket-kicker' }, 'Tonight\'s programme'),
+    h(
+      'dl',
+      { class: 'ticket-rows' },
+      h('div', null, h('dt', null, 'Every country'), h('dd', null, 'One page per title, grouped by service')),
+      h('div', null, h('dt', null, 'Five ways to watch'), h('dd', null, 'Stream, free, with ads, rent and buy')),
+      h('div', null, h('dt', null, 'Your services first'), h('dd', null, 'Saved in this browser, never sent anywhere')),
+      h('div', null, h('dt', null, 'Watch it'), h('dd', null, 'A shortcut, a command or plain steps for your VPN')),
+    ),
+  );
+}
+
 export function howItWorks(): HTMLElement {
   return h(
     'section',
@@ -101,9 +118,14 @@ export function renderHome(main: HTMLElement, route: Route): () => void {
   const hero = h(
     'section',
     { class: 'wrap hero-home' },
-    h('h1', { class: 'display', tabindex: -1 }, 'Where is it streaming?'),
-    h('p', { class: 'lede' }, 'Search a movie or show. See every country and service that carries it, then pick a region and watch.'),
-    box,
+    h(
+      'div',
+      { class: 'hero-main' },
+      h('h1', { class: 'display', tabindex: -1 }, 'Where is it streaming?'),
+      h('p', { class: 'lede' }, 'Search a movie or show. See every country and service that carries it, then pick a region and watch.'),
+      box,
+    ),
+    ticket(),
   );
   main.append(hero);
 
