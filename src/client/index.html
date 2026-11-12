@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Reelmap: where is it streaming?</title>
+    <meta name="description" content="Search any movie or show and see which countries and streaming services carry it. Pick a region, switch your VPN, and watch." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f4f0e7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#151310" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="Reelmap" />
+    <meta property="og:description" content="Find which countries and services stream any movie or show." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/instrument-serif-400-v5.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="%CSS%" />
+    <script src="%THEME%"></script>
+    <script type="module" src="%APP%"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="masthead" id="masthead">
+      <div class="wrap masthead-row"><a class="brand" href="/"><span class="brand-name">Reelmap</span></a></div>
+    </header>
+    <div id="banner" hidden></div>
+    <main id="main" tabindex="-1">
+      <noscript><div class="wrap page-msg"><p>Reelmap needs JavaScript to search titles.</p></div></noscript>
+    </main>
+    <footer class="footer">
+      <div class="wrap footer-row">
+        <div class="footer-attrib">
+          <a href="https://www.themoviedb.org" rel="noopener" target="_blank"><img class="tmdb-logo" src="/img/tmdb-logo.svg" width="108" height="14" alt="TMDB" /></a>
+          <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+        </div>
+        <div class="footer-attrib">
+          <span>Streaming data from <a href="https://www.justwatch.com" rel="noopener" target="_blank">JustWatch</a>.</span>
+          <a href="/about">How it works</a>
+        </div>
+      </div>
+    </footer>
+    <div id="live" class="sr-only" aria-live="polite"></div>
+  </body>
+</html>
