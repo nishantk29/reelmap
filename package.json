@@ -14,8 +14,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "screenshots": "playwright test --config playwright.screenshots.config.ts",
-    "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit -p tsconfig.json && node scripts/lint.mjs"
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.worker.json",
+    "lint": "npm run typecheck && node scripts/lint.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261112.1",

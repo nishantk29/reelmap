@@ -1,19 +1,8 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["@cloudflare/workers-types/experimental", "node"],
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "resolveJsonModule": true
+    "types": ["node"]
   },
-  "include": ["src", "test", "e2e", "scripts/*.d.ts", "playwright.config.ts", "playwright.screenshots.config.ts", "vitest.config.ts"]
+  "include": ["src/client", "src/shared", "src/fixtures", "e2e", "playwright.config.ts", "playwright.screenshots.config.ts"]
 }
