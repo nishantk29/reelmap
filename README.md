@@ -81,6 +81,7 @@ For `wrangler dev`, put it in `.dev.vars` (git-ignored) as `TMDB_READ_ACCESS_TOK
 npm test            # Vitest: grouping, filters, validation, Watch it builders, Worker proxy
 npm run e2e         # Playwright, Chromium at 390x844 and 1280x800
 BASE_URL=https://watch.hatethespurs.com npm run e2e   # same suite against a live site
+PREVIEW=1 BASE_URL=https://watch.hatethespurs.com npm run e2e   # live site still in preview mode (no token)
 npm run typecheck
 npm run lint
 npm run screenshots # regenerate docs/screenshots

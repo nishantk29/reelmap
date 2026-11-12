@@ -1,7 +1,8 @@
 import { test, expect } from './fixtures';
 import type { Page } from '@playwright/test';
 
-const preview = !process.env.BASE_URL;
+// A deployed site without a TMDB token also runs in preview mode: set PREVIEW=1 with BASE_URL.
+const preview = !process.env.BASE_URL || process.env.PREVIEW === '1';
 
 const offerTypes = (page: Page) =>
   page.locator('.offer').evaluateAll((els) => [...new Set(els.map((e) => e.getAttribute('data-offer') ?? ''))].sort());
