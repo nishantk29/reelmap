@@ -193,14 +193,9 @@ export function openWatchSheet(t: WatchTarget): void {
             ? h('a', { class: 'btn btn-outline', href: link.url, rel: 'noopener', target: '_blank', 'data-testid': 'open-service' }, icon('external'), `Open ${provider.name}`)
             : null,
           h('p', { class: 'small' }, link.label, types.length ? `. In ${name}: ${types.join(', ')}.` : '.'),
-          h(
-            'p',
-            { class: 'small jw' },
-            'Streaming data from ',
-            h('a', { href: 'https://www.justwatch.com', rel: 'noopener', target: '_blank' }, 'JustWatch'),
-            '.',
-            region?.link ? [' ', h('a', { href: region.link, rel: 'noopener', target: '_blank', 'data-testid': 'more-options' }, 'More options')] : null,
-          ),
+          region?.link
+            ? h('p', { class: 'small' }, h('a', { href: region.link, rel: 'noopener', target: '_blank', 'data-testid': 'more-options' }, 'More options'))
+            : null,
         );
 
         clear(content, ...(isApple() ? [shortcutSection, cliSection] : [cliSection, shortcutSection]), stepsSection, openSection);
