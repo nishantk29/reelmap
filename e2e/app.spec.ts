@@ -19,9 +19,12 @@ test('home shows the preview banner, samples and attribution', async ({ page }) 
     await expect(page.getByTestId('preview-banner')).toContainText("Live data isn't connected yet. You're looking at sample titles.");
     await expect(page.getByTestId('featured-grid').locator('li')).toHaveCount(8);
   }
+  const notice = page.getByText('This product uses the TMDB API but is not endorsed or certified by TMDB.');
+  await expect(notice).toHaveCount(1);
   await expect(page.locator('footer')).toContainText('This product uses the TMDB API but is not endorsed or certified by TMDB.');
   await expect(page.locator('footer a[href="https://www.themoviedb.org"] img')).toBeVisible();
-  await expect(page.locator('footer a[href="https://www.justwatch.com"]')).toBeVisible();
+  await expect(page.locator('footer a[href="https://www.justwatch.com"]')).toHaveCount(0);
+  await expect(page.locator('#about a[href="https://www.justwatch.com"], #about .tmdb-logo')).toHaveCount(0);
 });
 
 test('search with keyboard: slash, arrows, escape, enter', async ({ page }) => {

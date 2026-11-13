@@ -102,11 +102,11 @@ Every VPN claim, with its official source and the date checked, is in [docs/vpn-
 
 ## Attribution
 
-<img src="public/img/tmdb-logo.svg" height="14" alt="TMDB">
+<a href="https://www.themoviedb.org"><img src="public/img/tmdb-logo.svg" height="14" alt="TMDB"></a>
 
-This product uses the TMDB API but is not endorsed or certified by TMDB. Movie and show data and images come from [The Movie Database](https://www.themoviedb.org).
+This product uses the TMDB API but is not endorsed or certified by TMDB.
 
-Streaming availability data comes from [JustWatch](https://www.justwatch.com) through TMDB.
+Streaming availability data is provided by [JustWatch](https://www.justwatch.com).
 
 The display face is Instrument Serif, under the SIL Open Font License (see `public/fonts/OFL-instrument-serif.txt`).
 

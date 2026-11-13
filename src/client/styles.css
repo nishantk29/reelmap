@@ -970,33 +970,12 @@ kbd {
   background: var(--accent);
 }
 
-.credits-grid {
-  display: grid;
-  gap: var(--s5);
-}
-.credits-grid p + p {
-  margin-top: var(--s2);
-}
-.credits-grid > div:first-child p {
+.credits p {
   color: var(--n7);
   max-width: 60ch;
 }
-@media (min-width: 768px) {
-  .credits-grid {
-    grid-template-columns: 3fr 2fr;
-    gap: var(--s7);
-  }
-}
-.attrib {
-  display: grid;
-  gap: var(--s2);
-  align-content: start;
-}
-.tmdb-link {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 32px;
-  align-items: center;
+.credits p + p {
+  margin-top: var(--s2);
 }
 .tmdb-logo {
   height: 14px;
