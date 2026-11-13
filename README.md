@@ -12,7 +12,7 @@ Search any movie or show and see which countries and streaming services carry it
 |---|---|
 | <img src="docs/screenshots/home-desktop-light.png" alt="Home page on desktop, light theme"> | <img src="docs/screenshots/title-desktop-dark.png" alt="Title page on desktop, dark theme"> |
 
-All screenshots are in [docs/screenshots](docs/screenshots). They come from preview mode, so every title in them is made up.
+All screenshots are in [docs/screenshots](docs/screenshots). They were taken on the live site with real TMDB data.
 
 ## Features
 
@@ -84,7 +84,7 @@ BASE_URL=https://watch.hatethespurs.com npm run e2e   # same suite against a liv
 PREVIEW=1 BASE_URL=https://watch.hatethespurs.com npm run e2e   # live site still in preview mode (no token)
 npm run typecheck
 npm run lint
-npm run screenshots # regenerate docs/screenshots
+npm run screenshots # regenerate docs/screenshots from local preview mode
 ```
 
 The e2e run starts two local servers: one in preview mode and one in live mode against a mocked TMDB. Every test fails on any console error or warning.
