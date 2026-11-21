@@ -6,6 +6,9 @@ import { parse, start, type Route } from './router';
 import { prefs, type ThemePref } from './store';
 import { openServicesSheet } from './services-sheet';
 import { openSettingsSheet } from './settings-sheet';
+import type { Sheet } from './sheet';
+import { slidingPill } from './pill';
+import { hideTooltip, setTip, withTooltip } from './tooltip';
 import { renderHome } from './views/home';
 import { renderTitle } from './views/title';
 import { renderNotFound } from './views/notfound';
@@ -38,28 +41,36 @@ media.addEventListener('change', () => applyTheme());
 
 /* ---------- shell ---------- */
 
+/** A masthead button that opens a sheet and reports it with aria-expanded while the sheet is open. */
+function sheetButton(testid: string, iconName: 'list' | 'sliders', label: string, open: () => Sheet): HTMLButtonElement {
+  const btn = h('button', { class: 'nav-btn', type: 'button', 'data-testid': testid, 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, icon(iconName), h('span', { class: 'nav-label' }, label));
+  btn.addEventListener('click', () => {
+    btn.setAttribute('aria-expanded', 'true');
+    open().el.addEventListener('close', () => btn.setAttribute('aria-expanded', 'false'));
+  });
+  return btn;
+}
+
 function renderMasthead(): void {
-  const themeBtn = h('button', { id: 'theme-toggle', class: 'icon-btn', type: 'button' });
+  const themeBtn = withTooltip(h('button', { id: 'theme-toggle', class: 'icon-btn', type: 'button' }));
   themeBtn.addEventListener('click', () => {
     const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
     prefs.setTheme(next);
     applyTheme(next);
+    setTip(themeBtn, null);
   });
+  const nav = h(
+    'nav',
+    { class: 'masthead-nav', 'aria-label': 'Preferences' },
+    sheetButton('open-services', 'list', 'My services', () => openServicesSheet()),
+    sheetButton('open-settings', 'sliders', 'My VPN', () => openSettingsSheet(applyTheme)),
+    themeBtn,
+  );
   clear(
     masthead,
-    h(
-      'div',
-      { class: 'wrap masthead-row' },
-      h('a', { class: 'brand', href: '/', 'aria-label': 'Reelmap home' }, mark(), h('span', { class: 'brand-name' }, 'Reelmap')),
-      h(
-        'nav',
-        { class: 'masthead-nav', 'aria-label': 'Preferences' },
-        h('button', { class: 'nav-btn', type: 'button', 'data-testid': 'open-services', onclick: () => openServicesSheet() }, icon('list'), h('span', { class: 'nav-label' }, 'My services')),
-        h('button', { class: 'nav-btn', type: 'button', 'data-testid': 'open-settings', onclick: () => openSettingsSheet(applyTheme) }, icon('sliders'), h('span', { class: 'nav-label' }, 'My VPN')),
-        themeBtn,
-      ),
-    ),
+    h('div', { class: 'wrap masthead-row' }, h('a', { class: 'brand', href: '/', 'aria-label': 'Reelmap home' }, mark(), h('span', { class: 'brand-name' }, 'Reelmap')), nav),
   );
+  slidingPill(nav);
   applyTheme();
 }
 
@@ -93,6 +104,7 @@ const TITLES: Record<Route['name'], string> = {
 let firstRender = true;
 function render(): void {
   cleanup?.();
+  hideTooltip();
   const route = parse(location);
   document.title = TITLES[route.name];
   document.body.dataset.route = route.name;

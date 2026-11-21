@@ -5,6 +5,7 @@ import { icon } from '../icons';
 import { backdrop, poster, providerLogo } from '../poster';
 import { navigate, setParam } from '../router';
 import { searchBox } from '../search';
+import { setTip, withTooltip } from '../tooltip';
 import { onChange, prefs } from '../store';
 import { openServicesSheet } from '../services-sheet';
 import { openWatchSheet } from '../watch-sheet';
@@ -23,6 +24,30 @@ function metaLine(d: TitleDetail): string {
   if (d.type === 'tv' && d.seasons) parts.push(`${d.seasons} season${d.seasons === 1 ? '' : 's'}`);
   if (d.type === 'tv' && d.runtime) parts.push(`${d.runtime} min episodes`);
   return parts.join(' · ');
+}
+
+/** Copy link and Share (only where the browser can share) for the hero. */
+function shareActions(title: string): HTMLElement {
+  let reset = 0;
+  const copy = withTooltip(h('button', { class: 'icon-btn hero-btn', type: 'button', 'aria-label': 'Copy link', 'data-testid': 'copy-link' }, icon('link')));
+  copy.addEventListener('click', async () => {
+    let msg = 'Copied';
+    try {
+      await navigator.clipboard.writeText(location.href);
+    } catch {
+      msg = 'Copy is blocked here';
+    }
+    setTip(copy, msg);
+    announce(msg);
+    window.clearTimeout(reset);
+    reset = window.setTimeout(() => setTip(copy, null), 2000);
+  });
+  const canShare = typeof navigator.share === 'function';
+  const share = canShare ? withTooltip(h('button', { class: 'icon-btn hero-btn', type: 'button', 'aria-label': 'Share', 'data-testid': 'share' }, icon('share'))) : null;
+  share?.addEventListener('click', () => {
+    navigator.share({ title, url: location.href }).catch(() => {});
+  });
+  return h('div', { class: 'hero-actions' }, copy, share);
 }
 
 function skeleton(): HTMLElement {
@@ -119,6 +144,7 @@ function mount(root: HTMLElement, d: TitleDetail): () => void {
         h('h1', { class: 'display title-h', tabindex: -1, 'data-testid': 'title-heading' }, d.title),
         h('p', { class: 'title-meta tnum' }, metaLine(d)),
         d.genres.length ? h('ul', { class: 'tags', 'aria-label': 'Genres' }, d.genres.map((g) => h('li', { class: 'tag' }, g))) : null,
+        shareActions(d.title),
       ),
     ),
   );

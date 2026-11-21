@@ -69,6 +69,9 @@
   --wrap: 1240px;
   --gutter: 16px;
   --tap: 44px;
+  /* Masthead: 60px row plus its hairline. The glass tint is the page colour. */
+  --bar-h: 61px;
+  --bar-glass: rgba(244, 240, 231, 0.76);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,6 +92,7 @@
     --accent-soft: #3b231c;
     --accent-text: #f08a74;
     --scrim: rgba(10, 9, 7, 0.66);
+    --bar-glass: rgba(21, 19, 16, 0.76);
     --focus: #8cc4ef;
     --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.5);
   }
@@ -111,6 +115,7 @@
   --accent-soft: #3b231c;
   --accent-text: #f08a74;
   --scrim: rgba(10, 9, 7, 0.66);
+  --bar-glass: rgba(21, 19, 16, 0.76);
   --focus: #8cc4ef;
   --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.5);
 }
@@ -132,6 +137,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Anchors and scrollIntoView land below the sticky masthead. */
+  scroll-padding-top: calc(var(--bar-h) + var(--s3));
 }
 
 body {
@@ -296,8 +303,26 @@ kbd {
 
 /* ---------- masthead ---------- */
 
+/* A glass chrome bar over plain pages. Where a photo would scroll under it
+   (the title hero), or where the browser has no backdrop-filter, it is solid. */
 .masthead {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   border-bottom: 1px solid var(--line);
+  background: var(--bar-glass);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+body[data-route='title'] .masthead {
+  background: var(--bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .masthead {
+    background: var(--bg);
+  }
 }
 .masthead-row {
   display: flex;
@@ -341,9 +366,50 @@ kbd {
 }
 
 .masthead-nav {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s1);
+}
+.masthead-nav > button {
+  position: relative;
+  z-index: 1;
+}
+/* The sliding highlight: width is set at once, movement is transform only (FLIP). */
+.nav-pill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--pill-w, 0);
+  height: var(--tap);
+  margin-top: calc(var(--tap) / -2);
+  border-radius: var(--r-field);
+  background: var(--sunken);
+  transform-origin: 0 50%;
+  transform: translateX(var(--pill-x, 0)) scaleX(var(--pill-s, 1));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 220ms var(--ease),
+    opacity 140ms var(--ease);
+}
+.nav-pill.is-on {
+  opacity: 1;
+}
+.nav-pill.is-active {
+  background: var(--n3);
+}
+.nav-pill.no-slide {
+  transition: opacity 140ms var(--ease);
+}
+/* The pill is the hover state in the nav; a press still shows on touch. */
+.masthead-nav > .nav-btn:hover,
+.masthead-nav > .icon-btn:hover {
+  background: transparent;
+}
+.masthead-nav > .nav-btn:active,
+.masthead-nav > .icon-btn:active {
+  background: var(--sunken);
 }
 .nav-btn,
 .icon-btn {
@@ -1061,6 +1127,49 @@ kbd {
   border-radius: var(--r-pill);
   color: #f1eadc;
 }
+.hero-actions {
+  display: flex;
+  gap: var(--s2);
+  margin-top: var(--s3);
+}
+.hero-btn {
+  color: #f7f2e8;
+  border: 1px solid rgba(247, 242, 232, 0.4);
+  transition: background-color 160ms var(--ease);
+}
+.hero-btn:hover,
+.hero-btn:active {
+  background: rgba(247, 242, 232, 0.14);
+}
+
+/* One shared tooltip, placed by tooltip.ts through --tip-x / --tip-y. Fade only. */
+.tooltip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  transform: translate(var(--tip-x, 0), var(--tip-y, 0));
+  max-width: min(240px, calc(100vw - 16px));
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--n9);
+  color: var(--n0);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 120ms var(--ease),
+    visibility 0s linear 120ms;
+}
+.tooltip.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 120ms var(--ease);
+}
 @media (min-width: 768px) {
   .hero {
     min-height: 380px;
@@ -1108,9 +1217,9 @@ kbd {
   }
   .title-aside {
     position: sticky;
-    top: var(--s4);
+    top: calc(var(--bar-h) + var(--s4));
     align-self: start;
-    max-height: calc(100vh - 32px);
+    max-height: calc(100vh - var(--bar-h) - 32px);
     overflow: auto;
   }
 }

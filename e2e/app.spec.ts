@@ -215,6 +215,94 @@ test('theme toggle switches and persists', async ({ page }) => {
   await expect(toggle).toHaveAttribute('aria-label', 'Switch to light theme');
 });
 
+test.describe('masthead and tooltips', () => {
+  const bar = (page: Page) =>
+    page.locator('#masthead').evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { position: cs.position, top: cs.top, filter: cs.backdropFilter, bg: cs.backgroundColor };
+    });
+
+  test('glass on plain pages in both themes, solid over the title hero', async ({ page }) => {
+    for (const [scheme, glass] of [
+      ['light', 'rgba(244, 240, 231, 0.76)'],
+      ['dark', 'rgba(21, 19, 16, 0.76)'],
+    ] as const) {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/');
+      await expect(page.locator('#masthead')).toBeVisible();
+      expect(await bar(page)).toEqual({ position: 'sticky', top: '0px', filter: expect.stringContaining('blur(16px)'), bg: glass });
+      await page.mouse.wheel(0, 600);
+      await expect.poll(async () => (await page.locator('#masthead').boundingBox())?.y).toBe(0);
+    }
+    test.skip(!preview, 'uses sample titles');
+    await page.goto('/title/movie/900110');
+    await expect(page.getByTestId('title-heading')).toBeVisible();
+    expect(await bar(page)).toEqual({ position: 'sticky', top: '0px', filter: 'none', bg: 'rgb(21, 19, 16)' });
+  });
+
+  test('pill follows hover and focus, stays on the open sheet, and does not slide with reduced motion', async ({ page }) => {
+    await page.goto('/');
+    const pill = page.locator('.nav-pill');
+    const services = page.getByTestId('open-services');
+    await expect(pill).not.toHaveClass(/is-on/);
+    await page.locator('.brand').focus();
+    await page.keyboard.press('Tab');
+    await expect(services).toBeFocused();
+    await expect(pill).toHaveClass(/is-on/);
+    for (let i = 0; i < 3; i++) await page.keyboard.press('Tab');
+    await expect(pill).not.toHaveClass(/is-on/);
+    await services.hover();
+    await expect(pill).toHaveClass(/is-on/);
+    const box = await services.boundingBox();
+    await expect.poll(async () => Math.round((await pill.boundingBox())?.x ?? 0)).toBe(Math.round(box?.x ?? -1));
+    await page.mouse.move(5, 400);
+    await expect(pill).not.toHaveClass(/is-on/);
+
+    await services.click();
+    await expect(services).toHaveAttribute('aria-expanded', 'true');
+    await page.mouse.move(5, 5);
+    await expect(pill).toHaveClass(/is-on/);
+    await expect(pill).toHaveClass(/is-active/);
+    await page.keyboard.press('Escape');
+    await expect(services).toHaveAttribute('aria-expanded', 'false');
+    await expect(pill).not.toHaveClass(/is-active/);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(parseFloat(await pill.evaluate((el) => getComputedStyle(el).transitionDuration))).toBeLessThan(0.001);
+  });
+
+  test('icon buttons: tooltip on keyboard focus, Escape hides it, Copy link copies and announces', async ({ page }) => {
+    test.skip(!preview, 'uses sample titles');
+    await page.goto('/title/movie/900110');
+    const copy = page.getByTestId('copy-link');
+    await expect(copy).toBeVisible();
+    for (const b of [copy, page.locator('#theme-toggle'), page.getByTestId('open-services'), page.getByTestId('open-settings')]) {
+      const r = await b.boundingBox();
+      expect(r!.width).toBeGreaterThanOrEqual(44);
+      expect(r!.height).toBeGreaterThanOrEqual(44);
+    }
+    // Share only appears where the browser can share.
+    expect(await page.getByTestId('share').count()).toBe((await page.evaluate(() => typeof navigator.share === 'function')) ? 1 : 0);
+
+    await page.getByTestId('title-heading').focus();
+    await page.keyboard.press('Tab');
+    await expect(copy).toBeFocused();
+    const tip = page.getByRole('tooltip');
+    await expect(tip).toBeVisible();
+    await expect(tip).toHaveText('Copy link');
+    await expect(copy).toHaveAttribute('aria-describedby', 'tooltip');
+    await expect(copy).toHaveAccessibleName('Copy link');
+    await page.keyboard.press('Escape');
+    await expect(tip).toBeHidden();
+    await expect(copy).not.toHaveAttribute('aria-describedby', 'tooltip');
+
+    await copy.click();
+    await expect(page.locator('#live')).toHaveText('Copied');
+    await expect(tip).toHaveText('Copied');
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(page.url());
+  });
+});
+
 test.describe('not found', () => {
   // Chrome logs the document's own 404 status; that line is expected here only.
   test.use({ allowConsole: /status of 404/ });
