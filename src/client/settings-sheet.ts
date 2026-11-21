@@ -1,5 +1,5 @@
 import { h } from './dom';
-import { openSheet } from './sheet';
+import { openSheet, type Sheet } from './sheet';
 import { prefs, type ThemePref } from './store';
 import { VPNS, type VpnInfo } from '../shared/watch';
 
@@ -10,8 +10,8 @@ function capability(v: VpnInfo): string {
   return `${sc}. ${cli}.`;
 }
 
-export function openSettingsSheet(applyTheme: (t: ThemePref) => void): void {
-  openSheet(
+export function openSettingsSheet(applyTheme: (t: ThemePref) => void): Sheet {
+  return openSheet(
     'My VPN and display',
     (body) => {
       const current = prefs.vpn();

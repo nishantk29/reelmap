@@ -2,12 +2,12 @@ import { api, getMode } from './api';
 import { clear, h } from './dom';
 import { icon } from './icons';
 import { providerLogo } from './poster';
-import { openSheet } from './sheet';
+import { openSheet, type Sheet } from './sheet';
 import { prefs } from './store';
 import type { Provider } from '../shared/types';
 
-export function openServicesSheet(extra: Provider[] = []): void {
-  openSheet(
+export function openServicesSheet(extra: Provider[] = []): Sheet {
+  return openSheet(
     'My services',
     (body, sheet) => {
       const input = h('input', { class: 'input', type: 'search', placeholder: 'Find a service', 'aria-label': 'Find a service', autocomplete: 'off', 'data-testid': 'services-search' });
