@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { flipScale, pillFrame, placeTip } from '../src/shared/geometry';
+import { flipScale, pillFrame, placeTip, tipDescribes, TIP_DELAY_MS } from '../src/shared/geometry';
 
 describe('placeTip', () => {
   const tip = { width: 80, height: 26 };
@@ -31,5 +31,22 @@ describe('sliding pill', () => {
     expect(flipScale({ x: 0, w: 132 }, { x: 140, w: 44 })).toBe(3);
     expect(flipScale(null, { x: 0, w: 44 })).toBe(1);
     expect(flipScale({ x: 0, w: 0 }, { x: 0, w: 44 })).toBe(1);
+  });
+});
+
+describe('tipDescribes', () => {
+  it('does not describe a button whose tip repeats its name', () => {
+    expect(tipDescribes('Copy link', 'Copy link')).toBe(false);
+    expect(tipDescribes(' copy  link ', 'Copy link')).toBe(false);
+    expect(tipDescribes('', null)).toBe(false);
+  });
+
+  it('describes a button when the tip says something new', () => {
+    expect(tipDescribes('Copied', 'Copy link')).toBe(true);
+    expect(tipDescribes('Copy is blocked here', 'Copy link')).toBe(true);
+  });
+
+  it('waits 400ms on mouse hover', () => {
+    expect(TIP_DELAY_MS).toBe(400);
   });
 });

@@ -219,7 +219,7 @@ svg {
 }
 
 :focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -1150,12 +1150,12 @@ body[data-route='title'] .masthead {
   z-index: 60;
   transform: translate(var(--tip-x, 0), var(--tip-y, 0));
   max-width: min(240px, calc(100vw - 16px));
-  padding: 5px 10px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   background: var(--n9);
   color: var(--n0);
   font-size: var(--t-xs);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.35;
   white-space: nowrap;
   pointer-events: none;
@@ -1812,6 +1812,12 @@ body[data-route='title'] .masthead {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s2) var(--s3);
+}
+/* Footer links (text and the TMDB logo) keep a 44px tap target. */
+.footer-attrib a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .footer a {
   color: var(--n7);
