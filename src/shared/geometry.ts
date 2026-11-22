@@ -29,6 +29,18 @@ export function pillFrame(nav: { left: number }, target: { left: number; width: 
   return { x: Math.round(target.left - nav.left), w: Math.round(target.width) };
 }
 
+/** Mouse hover waits this long before the tooltip shows; keyboard focus shows it at once. */
+export const TIP_DELAY_MS = 400;
+
+/**
+ * A tooltip only describes its button when it says something the name does not
+ * (for example "Copied"); otherwise screen readers would hear the name twice.
+ */
+export function tipDescribes(text: string, name: string | null): boolean {
+  const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
+  return norm(text) !== '' && norm(text) !== norm(name ?? '');
+}
+
 /** The scaleX that makes a pill of the next width look like the previous frame (FLIP invert). */
 export function flipScale(prev: PillFrame | null, next: PillFrame): number {
   return prev && prev.w > 0 && next.w > 0 ? prev.w / next.w : 1;

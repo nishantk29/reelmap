@@ -287,19 +287,68 @@ test.describe('masthead and tooltips', () => {
     await page.getByTestId('title-heading').focus();
     await page.keyboard.press('Tab');
     await expect(copy).toBeFocused();
-    const tip = page.getByRole('tooltip');
+    // Keyboard focus shows the tip at once. It repeats the name, so it is hidden from screen readers.
+    const tip = page.locator('#tooltip');
     await expect(tip).toBeVisible();
+    await expect(tip).toHaveAttribute('role', 'tooltip');
     await expect(tip).toHaveText('Copy link');
-    await expect(copy).toHaveAttribute('aria-describedby', 'tooltip');
+    await expect(tip).toHaveAttribute('aria-hidden', 'true');
+    await expect(copy).not.toHaveAttribute('aria-describedby');
     await expect(copy).toHaveAccessibleName('Copy link');
+    expect(await tip.evaluate((el) => (({ borderRadius, paddingTop, paddingLeft, fontWeight }) => ({ borderRadius, paddingTop, paddingLeft, fontWeight }))(getComputedStyle(el)))).toEqual({
+      borderRadius: '8px',
+      paddingTop: '6px',
+      paddingLeft: '10px',
+      fontWeight: '600',
+    });
+    expect(await copy.evaluate((el) => getComputedStyle(el).outlineWidth)).toBe('3px');
+
+    // The first Escape hides only the tip (nothing behind it sees the key); the second gets through.
+    await page.evaluate(() => {
+      (window as unknown as { escapes: number }).escapes = 0;
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') (window as unknown as { escapes: number }).escapes++;
+      });
+    });
+    const escapes = () => page.evaluate(() => (window as unknown as { escapes: number }).escapes);
     await page.keyboard.press('Escape');
     await expect(tip).toBeHidden();
-    await expect(copy).not.toHaveAttribute('aria-describedby', 'tooltip');
+    expect(await escapes()).toBe(0);
+    await page.keyboard.press('Escape');
+    expect(await escapes()).toBe(1);
 
+    // "Copied" says something new, so then the tip describes the button.
     await copy.click();
     await expect(page.locator('#live')).toHaveText('Copied');
     await expect(tip).toHaveText('Copied');
+    await expect(copy).toHaveAttribute('aria-describedby', 'tooltip');
+    await expect(tip).toHaveAttribute('aria-hidden', 'false');
+    await expect(page.getByRole('tooltip')).toHaveText('Copied');
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(page.url());
+
+    // Mouse hover waits 400ms before the tip shows.
+    await page.getByTestId('title-heading').focus();
+    await page.mouse.move(5, 400);
+    await expect(tip).toBeHidden();
+    const theme = page.locator('#theme-toggle');
+    await theme.hover();
+    const shownAfter = await page.evaluate(
+      () =>
+        new Promise<number>((resolve) => {
+          const t0 = performance.now();
+          const check = () => (document.getElementById('tooltip')?.classList.contains('is-on') ? resolve(performance.now() - t0) : requestAnimationFrame(check));
+          check();
+        }),
+    );
+    expect(shownAfter).toBeGreaterThan(250);
+    await expect(tip).toHaveText(/theme/);
+  });
+
+  test('footer links are at least 44px tall', async ({ page }) => {
+    await page.goto('/');
+    const links = page.locator('.footer-attrib a');
+    await expect(links).toHaveCount(2);
+    for (const a of await links.all()) expect((await a.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   });
 });
 
