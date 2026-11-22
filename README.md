@@ -112,4 +112,4 @@ The display face is Instrument Serif, under the SIL Open Font License (see `publ
 
 ## License
 
-[MIT](LICENSE) © 2026 Nishant Kumar
+[MIT](LICENSE) © 2026 Hate the Spurs
