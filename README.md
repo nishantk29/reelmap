@@ -24,7 +24,7 @@ All screenshots are in [docs/screenshots](docs/screenshots). They were taken on 
 - **My VPN.** Saved in localStorage, ExpressVPN by default. Watch it tailors its steps to it.
 - **Watch it.** One sheet per service and country: a Shortcuts link, the official CLI command with a copy button, plain manual steps, and a link to the service. See [Watch it](#watch-it).
 - **Preview mode.** With no TMDB token the API returns `503 {"error":"not_configured"}` and the app says so plainly, then serves fictional sample titles with generated typographic posters. Every feature works in preview.
-- **Themes.** Light and dark follow the system, with a toggle that persists. AA contrast, visible focus rings, 44 px targets, reduced motion respected.
+- **Themes.** Light and dark follow the system setting (no switch). AA contrast, visible focus rings, 44 px targets, reduced motion respected.
 - **Small.** Vanilla TypeScript and esbuild, no framework. About 45 kB of JS and 24 kB of CSS before compression, plus one 21 kB display face.
 
 ## Stack

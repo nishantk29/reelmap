@@ -202,17 +202,13 @@ test.describe('title page', () => {
   });
 });
 
-test('theme toggle switches and persists', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'light' });
+test('theme follows the system setting, with no switch', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/');
-  const toggle = page.locator('#theme-toggle');
-  await expect(toggle).toHaveAttribute('aria-label', 'Switch to dark theme');
-  await toggle.click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('#masthead')).toBeVisible();
+  expect(await page.locator('#theme-toggle, input[name="theme"]').count()).toBe(0);
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(21, 19, 16)');
-  await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(toggle).toHaveAttribute('aria-label', 'Switch to light theme');
 });
 
 test.describe('masthead and tooltips', () => {
@@ -276,7 +272,7 @@ test.describe('masthead and tooltips', () => {
     await page.goto('/title/movie/900110');
     const copy = page.getByTestId('copy-link');
     await expect(copy).toBeVisible();
-    for (const b of [copy, page.locator('#theme-toggle'), page.getByTestId('open-services'), page.getByTestId('open-settings')]) {
+    for (const b of [copy, page.getByTestId('open-services'), page.getByTestId('open-settings')]) {
       const r = await b.boundingBox();
       expect(r!.width).toBeGreaterThanOrEqual(44);
       expect(r!.height).toBeGreaterThanOrEqual(44);
@@ -330,8 +326,7 @@ test.describe('masthead and tooltips', () => {
     await page.getByTestId('title-heading').focus();
     await page.mouse.move(5, 400);
     await expect(tip).toBeHidden();
-    const theme = page.locator('#theme-toggle');
-    await theme.hover();
+    await copy.hover();
     const shownAfter = await page.evaluate(
       () =>
         new Promise<number>((resolve) => {
@@ -341,7 +336,7 @@ test.describe('masthead and tooltips', () => {
         }),
     );
     expect(shownAfter).toBeGreaterThan(250);
-    await expect(tip).toHaveText(/theme/);
+    await expect(tip).toHaveText(/Copy link|Copied/);
   });
 
   test('footer links are at least 44px tall', async ({ page }) => {

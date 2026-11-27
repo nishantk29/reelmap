@@ -3,7 +3,6 @@ import { DEFAULT_VPN, VPNS, type VpnId } from '../shared/watch';
 import type { SearchItem } from '../shared/types';
 
 const KEY = 'reelmap:v1:';
-export type ThemePref = 'light' | 'dark' | 'system';
 
 function read<T>(name: string, fallback: T, check: (v: unknown) => v is T): T {
   try {
@@ -33,7 +32,6 @@ export function onChange(fn: (name: string) => void): () => void {
 
 const isIdList = (v: unknown): v is number[] => Array.isArray(v) && v.every((x) => Number.isSafeInteger(x) && x > 0);
 const isVpn = (v: unknown): v is VpnId => typeof v === 'string' && VPNS.some((x) => x.id === v);
-const isTheme = (v: unknown): v is ThemePref => v === 'light' || v === 'dark' || v === 'system';
 const isCc = (v: unknown): v is string => typeof v === 'string' && /^[A-Z]{2}$/.test(v);
 const isRecent = (v: unknown): v is SearchItem[] =>
   Array.isArray(v) && v.every((x) => x && typeof x === 'object' && typeof (x as SearchItem).id === 'number' && typeof (x as SearchItem).title === 'string');
@@ -53,8 +51,6 @@ export const prefs = {
   },
   vpn: (): VpnId => read('vpn', DEFAULT_VPN, isVpn),
   setVpn: (id: VpnId) => write('vpn', id),
-  theme: (): ThemePref => read('theme', 'system', isTheme),
-  setTheme: (t: ThemePref) => write('theme', t),
   region: (): string | null => read<string | null>('region', null, (v): v is string | null => v === null || isCc(v)),
   setRegion: (cc: string) => write('region', cc),
   onlyMine: (): boolean => read('onlyMine', false, (v): v is boolean => typeof v === 'boolean'),
