@@ -1,0 +1,5 @@
+{
+  "allow": [
+    "test-token-abc123-secret"
+  ]
+}
