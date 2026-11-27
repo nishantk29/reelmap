@@ -3,12 +3,11 @@ import { getMode, init, onModeChange } from './api';
 import { clear, h } from './dom';
 import { icon, mark } from './icons';
 import { parse, start, type Route } from './router';
-import { prefs, type ThemePref } from './store';
 import { openServicesSheet } from './services-sheet';
 import { openSettingsSheet } from './settings-sheet';
 import type { Sheet } from './sheet';
 import { slidingPill } from './pill';
-import { hideTooltip, setTip, withTooltip } from './tooltip';
+import { hideTooltip } from './tooltip';
 import { renderHome } from './views/home';
 import { renderTitle } from './views/title';
 import { renderNotFound } from './views/notfound';
@@ -18,26 +17,6 @@ const masthead = document.getElementById('masthead')!;
 const banner = document.getElementById('banner')!;
 
 let cleanup: (() => void) | void;
-
-/* ---------- theme ---------- */
-
-const media = window.matchMedia('(prefers-color-scheme: dark)');
-function effectiveTheme(): 'light' | 'dark' {
-  const t = prefs.theme();
-  return t === 'system' ? (media.matches ? 'dark' : 'light') : t;
-}
-export function applyTheme(t: ThemePref = prefs.theme()): void {
-  if (t === 'system') delete document.documentElement.dataset.theme;
-  else document.documentElement.dataset.theme = t;
-  const btn = document.getElementById('theme-toggle');
-  if (btn) {
-    const dark = effectiveTheme() === 'dark';
-    btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
-    btn.setAttribute('aria-pressed', String(dark));
-    clear(btn, icon(dark ? 'sun' : 'moon'));
-  }
-}
-media.addEventListener('change', () => applyTheme());
 
 /* ---------- shell ---------- */
 
@@ -52,26 +31,17 @@ function sheetButton(testid: string, iconName: 'list' | 'sliders', label: string
 }
 
 function renderMasthead(): void {
-  const themeBtn = withTooltip(h('button', { id: 'theme-toggle', class: 'icon-btn', type: 'button' }));
-  themeBtn.addEventListener('click', () => {
-    const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-    prefs.setTheme(next);
-    applyTheme(next);
-    setTip(themeBtn, null);
-  });
   const nav = h(
     'nav',
     { class: 'masthead-nav', 'aria-label': 'Preferences' },
     sheetButton('open-services', 'list', 'My services', () => openServicesSheet()),
-    sheetButton('open-settings', 'sliders', 'My VPN', () => openSettingsSheet(applyTheme)),
-    themeBtn,
+    sheetButton('open-settings', 'sliders', 'My VPN', () => openSettingsSheet()),
   );
   clear(
     masthead,
     h('div', { class: 'wrap masthead-row' }, h('a', { class: 'brand', href: '/', 'aria-label': 'Reelmap home' }, mark(), h('span', { class: 'brand-name' }, 'Reelmap')), nav),
   );
   slidingPill(nav);
-  applyTheme();
 }
 
 function renderBanner(): void {
